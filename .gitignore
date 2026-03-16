@@ -1,0 +1,12 @@
+.env
+.env.local
+.env.*.local
+secrets.py
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+venv/
+env/
+.env/
+.venv/
