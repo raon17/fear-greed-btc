@@ -17,26 +17,32 @@ def add_forward_returns(df):
         df[f"fwd_{days}d_pct"] = (
             df["btc_close"].shift(-days) / df["btc_close"] - 1
         ) * 100
-
     return df
 
 def load_data(refresh=False):
     if not refresh and os.path.exists(DATA_PATH):
         print(f"Loading merged data from {DATA_PATH}...")
         df = pd.read_csv(DATA_PATH, parse_dates=["date"])
-    else:
-        print("Fetching fresh data...")
-        fg = fetch_fear_greed()
-        btc = fetch_btc_price()
 
-        print("Merging datasets...")
-        df = pd.merge(fg, btc, on="date", how="inner")
+    print("Fetching Fear & Greed data...")
+    fg = fetch_fear_greed(limit=2000)
+ 
+    print("Fetching BTC price data...")
+    btc = fetch_btc_price()
+ 
+    # Merge on date to keeps only rows where both have data. Drop weekends and any API gaps
+    print("Merging datasets...")
+    df = pd.merge(fg, btc, on="date", how="inner")
+ 
+    df = df.dropna(subset=["btc_close"])
+ 
+    df = add_zones(df)
+    df = add_forward_returns(df)
+ 
+    df = df.reset_index(drop=True)
 
-        print("Adding zones and forward returns...")
-        df = add_zones(df)
-        df = add_forward_returns(df)
-
-        print(f"Saving merged data to {DATA_PATH}...")
-        df.to_csv(DATA_PATH, index=False)
-
+    os.makedirs("data", exist_ok=True)
+    df.to_csv(DATA_PATH, index=False)
+    print(f"Saved {len(df)} rows to {DATA_PATH}")
+ 
     return df
