@@ -19,3 +19,24 @@ def add_forward_returns(df):
         ) * 100
 
     return df
+
+def load_data(refresh=False):
+    if not refresh and os.path.exists(DATA_PATH):
+        print(f"Loading merged data from {DATA_PATH}...")
+        df = pd.read_csv(DATA_PATH, parse_dates=["date"])
+    else:
+        print("Fetching fresh data...")
+        fg = fetch_fear_greed()
+        btc = fetch_btc_price()
+
+        print("Merging datasets...")
+        df = pd.merge(fg, btc, on="date", how="inner")
+
+        print("Adding zones and forward returns...")
+        df = add_zones(df)
+        df = add_forward_returns(df)
+
+        print(f"Saving merged data to {DATA_PATH}...")
+        df.to_csv(DATA_PATH, index=False)
+
+    return df
