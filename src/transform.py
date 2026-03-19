@@ -46,3 +46,14 @@ def load_data(refresh=False):
     print(f"Saved {len(df)} rows to {DATA_PATH}")
  
     return df
+
+# Quick test
+if __name__ == "__main__":
+    df = load_data(refresh=True)
+ 
+    print(f"\nShape: {df.shape}")
+    print(f"\nColumns: {list(df.columns)}")
+    print(f"\nDate range: {df['date'].min().date()} to {df['date'].max().date()}")
+    print(f"\nZone counts:\n{df['zone'].value_counts()}")
+    print(f"\nFirst 5 rows:\n{df.head()}")
+    print(f"\nLast 5 rows (fwd returns will be NaN):\n{df.tail()}")

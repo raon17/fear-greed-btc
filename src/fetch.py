@@ -10,7 +10,6 @@ def fetch_fear_greed(limit=1000):
     response.raise_for_status()          
 
     data = response.json()["data"]       
-
     df = pd.DataFrame(data)
 
     # API timestamps as strings of Unix seconds and convert to datetime format
