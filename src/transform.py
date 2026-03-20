@@ -35,28 +35,25 @@ def load_data(refresh=False):
     print("Fetching BTC price data...")
     btc = fetch_btc_price()
 
-    # Merge on date, where inner join keeps only rows where both have data
+    # Merge on date, where inner join keeps only rows where both have data. Greed will have everyday data whereas BTC price may have some missing days, so this ensures we only keep rows where we have both.
     print("Merging datasets...")
     df = pd.merge(fg, btc, on="date", how="inner")
 
     # Drop any rows with missing values
-    df = df.dropna(subset=["btc_close"])
-
+    df = df.dropna(subset=["btc_close"]) # In case there are any missing BTC prices
     # Add zone labels and forward returns
-    df = add_zones(df)
-    df = add_forward_returns(df) # This creates new columns fwd_7d_pct, fwd_14d_pct, fwd_30d_pct with the future returns for each horizon
-
-    # Reset index after dropping rows to keep it clean
-    df = df.reset_index(drop=True)
+    df = add_zones(df) # create 'zone' column based on 'value' column
+    df = add_forward_returns(df) # Call add_forward_returns to create fwd_7d_pct, fwd_14d_pct, fwd_30d_pct columns
+    df = df.reset_index(drop=True) # Reset index after dropping rows and adding new columns
 
     # Save to CSV for next time
-    os.makedirs("data", exist_ok=True)
+    os.makedirs("data", exist_ok=True) # Create the data src/data directory if it doesn't exist
     df.to_csv(DATA_PATH, index=False)
     print(f"Saved {len(df)} rows to {DATA_PATH}")
 
     return df
 
-# Quick test - load the data and print some info about it
+# Quick test
 if __name__ == "__main__":
     df = load_data(refresh=True)
 
