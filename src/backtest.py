@@ -52,3 +52,32 @@ def significance_test(df, threshold=25, horizon=30):
         "other_n":     len(other),
     }
  
+
+def sweep_thresholds(df, horizon=30):
+    return pd.DataFrame([
+        threshold_backtest(df, t, horizon) for t in range(10, 45, 5)
+    ])
+ 
+ 
+#  Quick test 
+ 
+if __name__ == "__main__":
+    from src.transform import load_data
+ 
+    df = load_data()
+ 
+    print("=== Zone stats (30-day horizon) ===")
+    print(zone_stats(df, horizon=30).to_string(index=False))
+ 
+    print("\n=== Signal vs buy-and-hold (threshold=25, 30-day) ===")
+    result = threshold_backtest(df, threshold=25, horizon=30)
+    for k, v in result.items():
+        print(f"  {k}: {v}")
+ 
+    print("\n=== Statistical significance test ===")
+    sig = significance_test(df, threshold=25, horizon=30)
+    for k, v in sig.items():
+        print(f"  {k}: {v}")
+ 
+    print("\n=== Threshold sweep (30-day horizon) ===")
+    print(sweep_thresholds(df, horizon=30).to_string(index=False))
