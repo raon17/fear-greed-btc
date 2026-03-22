@@ -118,7 +118,6 @@ fig1.add_hline(y=0, line_color="gray", line_width=0.8)
 st.plotly_chart(fig1, use_container_width=True)
 
 
-
 #  Chart 2: Win rate by zone 
 st.subheader(f"Win rate by zone ({horizon}-day horizon)")
 
@@ -136,4 +135,44 @@ fig2.add_hline(y=50, line_dash="dash", line_color="gray",
                annotation_text="50% = coin flip")
 fig2.update_layout(showlegend=False, height=340, yaxis_title="Win rate %")
 st.plotly_chart(fig2, use_container_width=True)
+
+
+# ── Chart 3: Threshold sweep ───────────────────────────────────────────────────
+st.divider()
+st.subheader(f"Threshold sensitivity — where does the signal peak? ({horizon}-day)")
+st.caption("Shows how average return changes as you tighten or loosen the buy threshold.")
+
+sweep = sweep_thresholds(df, horizon=horizon)
+
+fig3 = go.Figure()
+fig3.add_trace(go.Scatter(
+    x=sweep["threshold"],
+    y=sweep["signal_avg_return"],
+    mode="lines+markers",
+    name="Signal avg return",
+    line=dict(color="#185fa5", width=2),
+    marker=dict(size=7),
+))
+fig3.add_trace(go.Scatter(
+    x=sweep["threshold"],
+    y=[result["bah_avg_return"]] * len(sweep),
+    mode="lines",
+    name="Buy & hold",
+    line=dict(color="#888780", dash="dash", width=1.5),
+))
+# Highlight the currently selected threshold
+fig3.add_vline(
+    x=threshold,
+    line_dash="dot",
+    line_color="#E24B4A",
+    annotation_text=f"Current: {threshold}",
+    annotation_position="top right",
+)
+fig3.update_layout(
+    xaxis_title="Fear & Greed threshold",
+    yaxis_title="Avg return %",
+    height=320,
+    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0),
+)
+st.plotly_chart(fig3, use_container_width=True)
 
