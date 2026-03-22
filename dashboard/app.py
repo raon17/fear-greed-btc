@@ -116,3 +116,24 @@ fig1.update_traces(texttemplate="%{text:.1f}%", textposition="outside")
 fig1.update_layout(showlegend=False, height=340, yaxis_title="Avg return %")
 fig1.add_hline(y=0, line_color="gray", line_width=0.8)
 st.plotly_chart(fig1, use_container_width=True)
+
+
+
+#  Chart 2: Win rate by zone 
+st.subheader(f"Win rate by zone ({horizon}-day horizon)")
+
+fig2 = px.bar(
+    stats,
+    x="zone",
+    y="win_rate",
+    color="zone",
+    color_discrete_map=zone_colors,
+    text="win_rate",
+    labels={"win_rate": "Win rate %", "zone": ""},
+)
+fig2.update_traces(texttemplate="%{text:.0f}%", textposition="outside")
+fig2.add_hline(y=50, line_dash="dash", line_color="gray",
+               annotation_text="50% = coin flip")
+fig2.update_layout(showlegend=False, height=340, yaxis_title="Win rate %")
+st.plotly_chart(fig2, use_container_width=True)
+
