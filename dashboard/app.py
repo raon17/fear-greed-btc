@@ -137,7 +137,7 @@ fig2.update_layout(showlegend=False, height=340, yaxis_title="Win rate %")
 st.plotly_chart(fig2, use_container_width=True)
 
 
-# ── Chart 3: Threshold sweep ───────────────────────────────────────────────────
+#  Chart 3: Threshold sweep 
 st.divider()
 st.subheader(f"Threshold sensitivity — where does the signal peak? ({horizon}-day)")
 st.caption("Shows how average return changes as you tighten or loosen the buy threshold.")
@@ -175,4 +175,25 @@ fig3.update_layout(
     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0),
 )
 st.plotly_chart(fig3, use_container_width=True)
+
+
+#  Chart 4: Fear & Greed history coloured by zone 
+st.divider()
+st.subheader("Fear & Greed index — full history")
+
+fig4 = px.scatter(
+    df,
+    x="date",
+    y="value",
+    color="zone",
+    color_discrete_map=zone_colors,
+    opacity=0.6,
+    labels={"value": "Fear & Greed index", "date": ""},
+)
+fig4.add_hline(y=25, line_dash="dash", line_color="#E24B4A",
+               annotation_text="Extreme Fear boundary (25)")
+fig4.add_hline(y=75, line_dash="dash", line_color="#0f6e56",
+               annotation_text="Extreme Greed boundary (75)")
+fig4.update_layout(height=360, legend_title="Zone")
+st.plotly_chart(fig4, use_container_width=True)
 
