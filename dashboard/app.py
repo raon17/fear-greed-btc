@@ -197,3 +197,33 @@ fig4.add_hline(y=75, line_dash="dash", line_color="#0f6e56",
 fig4.update_layout(height=360, legend_title="Zone")
 st.plotly_chart(fig4, use_container_width=True)
 
+
+#  hart 5: Scatter -- F&G value vs forward return 
+st.subheader(f"Scatter: F&G value vs {horizon}-day return")
+st.caption("If the signal works, you'd expect lower F&G values (left side) to cluster higher on the y-axis")
+
+fig5 = px.scatter(
+    df.dropna(subset=[f"fwd_{horizon}d_pct"]),
+    x="value",
+    y=f"fwd_{horizon}d_pct",
+    color="zone",
+    color_discrete_map=zone_colors,
+    opacity=0.4,
+    labels={
+        "value": "Fear & Greed index",
+        f"fwd_{horizon}d_pct": f"{horizon}-day return %",
+    },
+)
+fig5.add_hline(y=0, line_color="gray", line_width=0.8)
+fig5.add_vline(x=threshold, line_dash="dot", line_color="#E24B4A",
+               annotation_text=f"Threshold ({threshold})")
+fig5.update_layout(height=380, legend_title="Zone")
+st.plotly_chart(fig5, use_container_width=True)
+
+
+# ── Data table ─────────────────────────────────────────────────────────────────
+with st.expander("View zone stats table"):
+    st.dataframe(stats, use_container_width=True)
+
+with st.expander("View threshold sweep table"):
+    st.dataframe(sweep, use_container_width=True)
