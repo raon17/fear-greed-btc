@@ -14,3 +14,10 @@ def fetch_btc(days=90):
     df = df.groupby("date")["price"].mean().reset_index()
 
     return df
+
+def test():
+    df = fetch_btc()
+    print(df)
+
+if __name__ == "__main__":
+    test()
