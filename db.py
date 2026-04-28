@@ -11,3 +11,7 @@ DB_CONFIG = {
     "password": os.getenv("DB_PASSWORD"),
 }
  
+def get_db_url():
+    c = DB_CONFIG
+    return f"postgresql+psycopg2://{c['user']}:{c['password']}@{c['host']}:{c['port']}/{c['dbname']}"
+ 
