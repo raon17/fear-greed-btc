@@ -33,12 +33,12 @@ def load_data():
 
         return df
 
-# Load data ----------------------------------------------------------------
+# Load data 
 df     = load_data()
 latest = df.iloc[-1]
 prev   = df.iloc[-2]
 
-# Header -------------------------------------------------------------------
+# Header 
 st.title("BTC × Fear & Greed")
 st.caption(f"Updated: {latest['date'].strftime('%Y-%m-%d')} · 90-day view")
  
@@ -49,7 +49,7 @@ if st.button("Refresh Data"):
 st.divider()
 
 
- # Metrics -------------------------------------------------------------------
+ # Metrics 
 
 c1, c2, c3 = st.columns(3)
 c1.metric("BTC Price", f"${latest['close']:,.0f}", f"${latest['close'] - prev['close']:+,.0f}")
@@ -76,7 +76,6 @@ def fng_gradient_color(v: int) -> str:
     return f"#{r:02x}{g:02x}{b:02x}"
   
 #  layout
- 
 chart_col, gauge_col = st.columns([3, 1])
  
 with chart_col:
